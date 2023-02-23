@@ -1,10 +1,10 @@
-import { ThemeProvider } from './ThemeProvider';
-import { Welcome } from './Welcome/Welcome';
+import { AppProvider } from './providers/app';
+import { Layout } from './components/Layout';
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <Welcome />
-    </ThemeProvider>
+    <AppProvider>
+      <Layout />
+    </AppProvider>
   );
 }
