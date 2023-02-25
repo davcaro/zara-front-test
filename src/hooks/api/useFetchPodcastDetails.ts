@@ -4,6 +4,7 @@ import ky from 'ky';
 import { PodcastDetails } from '@/types/podcastDetails';
 
 const API_URL = import.meta.env.VITE_API_URL;
+const CORS_API_URL = import.meta.env.VITE_CORS_API_URL;
 
 const getPodcastDetailsUrl = (id: string) => {
   const podcastDetailsUrl = new URL(`${API_URL}/lookup`);
@@ -13,7 +14,7 @@ const getPodcastDetailsUrl = (id: string) => {
 
 const fetchPodcastDetails = async (id: string) => {
   const apiResponse = (await ky
-    .get('https://api.allorigins.win/get', { searchParams: { url: getPodcastDetailsUrl(id) } })
+    .get('get', { prefixUrl: CORS_API_URL, searchParams: { url: getPodcastDetailsUrl(id) } })
     .json()) as { contents: string };
 
   const parsedData = JSON.parse(apiResponse.contents) as { results: Array<{ feedUrl: string }> };
@@ -44,12 +45,13 @@ const mapPodcastEpisodeId = (id: string | { '#text': string }) => {
   if (typeof id === 'string') {
     episodeId = id;
   } else if (typeof id === 'object') {
-    const lastSlashIndex = id['#text'].lastIndexOf('/');
-    const lastHashIndex = id['#text'].lastIndexOf('#');
-    const lastIndexOfChars = Math.max(lastSlashIndex, lastHashIndex);
-    episodeId = id['#text'].substring(lastIndexOfChars + 1);
+    episodeId = id['#text'];
   }
-  return episodeId;
+
+  const lastSlashIndex = episodeId.lastIndexOf('/');
+  const lastHashIndex = episodeId.lastIndexOf('#');
+  const lastIndexOfChars = Math.max(lastSlashIndex, lastHashIndex);
+  return episodeId.substring(lastIndexOfChars + 1);
 };
 
 const transformPodcastDetails: (id: string, data: string) => PodcastDetails = (id, data) => {
@@ -81,6 +83,6 @@ export const useFetchPodcastDetails = (id: string | null) =>
   useQuery({
     queryKey: ['podcast_details', id],
     queryFn: () => fetchPodcastDetails(id || ''),
-    enabled: Boolean(id),
     select: (data) => transformPodcastDetails(id || '', data),
+    enabled: Boolean(id),
   });

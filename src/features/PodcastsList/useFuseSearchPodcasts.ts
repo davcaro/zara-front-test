@@ -13,14 +13,15 @@ type UseFuseSearchPodcastsProps = {
 };
 
 export const useFuseSearchPodcasts = ({ search, podcasts }: UseFuseSearchPodcastsProps) => {
+  const fuseList = useMemo(() => new Fuse(podcasts, SEARCH_OPTIONS), [podcasts]);
+
   const filteredPodcasts = useMemo(() => {
     if (!search.length) {
       return podcasts;
     }
 
-    const fuseList = new Fuse(podcasts, SEARCH_OPTIONS);
     return fuseList.search(search).map(({ item }) => item);
-  }, [search, podcasts]);
+  }, [fuseList, podcasts, search]);
 
   return filteredPodcasts;
 };

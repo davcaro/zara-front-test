@@ -26,8 +26,8 @@ export const PodcastListItem = ({ podcast }: PodcastListItemProps) => (
     <PodcastDetailsLink podcastId={podcast.id} sx={{ flex: 1 }}>
       <Card shadow="sm" radius="md" pt={IMAGE_HEIGHT / 2} h="100%" withBorder>
         <Stack spacing={0} mt="md">
-          <Text weight={500} align="center">
-            {podcast.name.toUpperCase()}
+          <Text weight={500} align="center" transform="uppercase">
+            {podcast.name}
           </Text>
 
           <Text size="sm" align="center" color="dimmed" sx={{ wordBreak: 'break-word' }}>
