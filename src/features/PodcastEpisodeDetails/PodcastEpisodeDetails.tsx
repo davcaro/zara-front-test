@@ -9,7 +9,7 @@ export const PodcastEpisodeDetails = () => {
   const episodeId = params?.episodeId || null;
   const { data: podcast } = useFetchPodcastDetails(podcastId);
 
-  const episode = podcast?.episodes.find((e) => e.id === Number(episodeId));
+  const episode = podcast?.episodes.find(({ id }) => id === episodeId);
 
   if (!podcastId || !podcast || !episode) {
     return null;

@@ -6,12 +6,11 @@ import { EpisodesListTable } from './EpisodesListTable';
 type EpisodesListProps = {
   podcastId: string;
   episodes: Array<PodcastEpisode>;
-  episodesCount: number;
 };
 
-export const EpisodesList = ({ podcastId, episodes, episodesCount }: EpisodesListProps) => (
+export const EpisodesList = ({ podcastId, episodes }: EpisodesListProps) => (
   <Stack>
-    <EpisodesCounter count={episodesCount} />
+    <EpisodesCounter count={episodes.length} />
     <EpisodesListTable podcastId={podcastId} episodes={episodes} />
   </Stack>
 );

@@ -1,68 +1,78 @@
 import { useQuery } from '@tanstack/react-query';
+import { XMLParser } from 'fast-xml-parser';
 import ky from 'ky';
 import { PodcastDetails } from '@/types/podcastDetails';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-// TODO: Pagination
 const getPodcastDetailsUrl = (id: string) => {
   const podcastDetailsUrl = new URL(`${API_URL}/lookup`);
   podcastDetailsUrl.searchParams.append('id', id);
-  podcastDetailsUrl.searchParams.append('entity', 'podcastEpisode');
   return podcastDetailsUrl.href;
 };
 
-type PodcastDetailsStringfiedResponse = {
-  contents: string;
+const fetchPodcastDetails = async (id: string) => {
+  const apiResponse = (await ky
+    .get('https://api.allorigins.win/get', { searchParams: { url: getPodcastDetailsUrl(id) } })
+    .json()) as { contents: string };
+
+  const parsedData = JSON.parse(apiResponse.contents) as { results: Array<{ feedUrl: string }> };
+  const { feedUrl } = parsedData.results[0];
+
+  return ky.get(feedUrl).text();
 };
 
-const fetchPodcastDetails = (id: string) =>
-  ky
-    .get('https://api.allorigins.win/get', {
-      searchParams: { url: getPodcastDetailsUrl(id) },
-      timeout: 60 * 1000,
-    })
-    .json() as Promise<PodcastDetailsStringfiedResponse>;
-
 type PodcastDetailsResponse = {
-  results: Array<{
-    kind: 'podcast' | 'podcast-episode';
-    collectionId: string;
-    collectionName: string;
-    artistName?: string;
-    artworkUrl600: string;
-    trackId: number;
-    trackName: string;
-    description?: string;
-    releaseDate: string;
-    trackTimeMillis: number;
-    trackCount?: number;
-    episodeUrl?: string;
+  title: string;
+  description: string;
+  image?: { url: string };
+  'itunes:image'?: { href: string };
+  'itunes:summary'?: string;
+  'itunes:author': string;
+  item: Array<{
+    guid: string | { '#text': string };
+    title: string;
+    description: string;
+    pubDate: string;
+    'itunes:duration'?: string;
+    enclosure: { url: string };
   }>;
 };
 
-const transformPodcastDetails: (res: PodcastDetailsStringfiedResponse) => PodcastDetails = (
-  res
-) => {
-  const { results } = JSON.parse(res.contents) as PodcastDetailsResponse;
+const mapPodcastEpisodeId = (id: string | { '#text': string }) => {
+  let episodeId = '';
+  if (typeof id === 'string') {
+    episodeId = id;
+  } else if (typeof id === 'object') {
+    const lastSlashIndex = id['#text'].lastIndexOf('/');
+    const lastHashIndex = id['#text'].lastIndexOf('#');
+    const lastIndexOfChars = Math.max(lastSlashIndex, lastHashIndex);
+    episodeId = id['#text'].substring(lastIndexOfChars + 1);
+  }
+  return episodeId;
+};
 
-  const podcast = results.find(({ kind }) => kind === 'podcast');
-  const episodes = results.filter(({ kind }) => kind === 'podcast-episode');
+const transformPodcastDetails: (id: string, data: string) => PodcastDetails = (id, data) => {
+  const xmlParser = new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: '',
+  });
+  const podcastJson = xmlParser.parse(data);
+  const podcast = podcastJson.rss.channel as PodcastDetailsResponse;
 
   return {
-    collectionId: podcast?.collectionId || '',
-    collectionName: podcast?.collectionName || '',
-    artistName: podcast?.artistName || '',
-    artworkUrl: podcast?.artworkUrl600 || '',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', // TODO: Fetch description
-    episodesCount: podcast?.trackCount || 0,
-    episodes: episodes.map((episode) => ({
-      id: episode.trackId,
-      trackName: episode.trackName,
+    id,
+    title: podcast.title,
+    description: podcast?.['itunes:summary'] || podcast?.description || '',
+    author: podcast['itunes:author'],
+    artworkUrl: podcast?.['itunes:image']?.href || podcast.image?.url,
+    episodes: podcast.item.map((episode) => ({
+      id: mapPodcastEpisodeId(episode.guid),
+      title: episode.title,
       description: episode.description,
-      releaseDate: episode.releaseDate,
-      trackTimeMillis: episode.trackTimeMillis,
-      trackUrl: episode.episodeUrl,
+      releaseDate: episode.pubDate,
+      duration: episode['itunes:duration'],
+      trackUrl: episode.enclosure?.url,
     })),
   };
 };
@@ -72,5 +82,5 @@ export const useFetchPodcastDetails = (id: string | null) =>
     queryKey: ['podcast_details', id],
     queryFn: () => fetchPodcastDetails(id || ''),
     enabled: Boolean(id),
-    select: transformPodcastDetails,
+    select: (data) => transformPodcastDetails(id || '', data),
   });

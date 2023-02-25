@@ -1,8 +1,8 @@
 export type PodcastEpisode = {
-  id: number;
-  trackName: string;
+  id: string;
+  title: string;
   description?: string;
   releaseDate: string;
-  trackTimeMillis: number;
+  duration?: string | number;
   trackUrl?: string;
 };

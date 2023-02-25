@@ -1,8 +1,10 @@
-import { Duration } from 'date-fns';
+import { intervalToDuration } from 'date-fns';
 
 const pad = (number: Number) => (number < 10 ? `0${number}` : number);
 
-export const formatDuration = (duration: Duration) => {
+const formatDurationFromMilliseconds = (milliseconds: number) => {
+  const duration = intervalToDuration({ start: 0, end: milliseconds });
+
   const { years, months, days, hours, minutes, seconds } = {
     years: duration.years || 0,
     months: duration.months || 0,
@@ -20,4 +22,15 @@ export const formatDuration = (duration: Duration) => {
   }
 
   return parts.map(pad).join(':');
+};
+
+export const formatDuration = (duration: string | number) => {
+  const durationContainsColon = typeof duration === 'string' && duration.includes(':');
+  const durationCantBeConvertedToNumber = Number.isNaN(Number(duration));
+
+  if (durationContainsColon || durationCantBeConvertedToNumber) {
+    return duration;
+  }
+
+  return formatDurationFromMilliseconds(Number(duration) * 1000);
 };

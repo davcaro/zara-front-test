@@ -1,11 +1,10 @@
 import { PodcastEpisode } from './podcastEpisode';
 
 export type PodcastDetails = {
-  collectionId: string;
-  collectionName: string;
-  artistName: string;
-  artworkUrl: string;
+  id: string;
+  title: string;
   description: string;
-  episodesCount: number;
+  author: string;
+  artworkUrl?: string;
   episodes: Array<PodcastEpisode>;
 };

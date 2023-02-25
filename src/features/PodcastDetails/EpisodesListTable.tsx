@@ -1,6 +1,6 @@
 import { Link } from 'wouter';
 import { Anchor, Card, Table, Text } from '@mantine/core';
-import { intervalToDuration, intlFormat } from 'date-fns';
+import { intlFormat } from 'date-fns';
 import { formatDuration } from '@/utils/dates';
 import { PodcastEpisode } from '@/types/podcastEpisode';
 
@@ -13,7 +13,7 @@ const EpisodeListItem = ({ podcastId, episode }: EpisodeListItemProps) => (
   <tr>
     <td>
       <Link href={`/podcast/${podcastId}/episode/${episode.id}`}>
-        <Anchor>{episode.trackName}</Anchor>
+        <Anchor>{episode.title}</Anchor>
       </Link>
     </td>
 
@@ -27,9 +27,7 @@ const EpisodeListItem = ({ podcastId, episode }: EpisodeListItemProps) => (
       </Text>
     </td>
 
-    <td>
-      <Text>{formatDuration(intervalToDuration({ start: 0, end: episode.trackTimeMillis }))}</Text>
-    </td>
+    <td>{episode.duration && <Text>{formatDuration(episode.duration)}</Text>}</td>
   </tr>
 );
 

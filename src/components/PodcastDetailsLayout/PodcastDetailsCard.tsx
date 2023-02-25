@@ -9,18 +9,18 @@ type PodcastDetailsCardProps = {
 export const PodcastDetailsCard = ({ podcast }: PodcastDetailsCardProps) => (
   <Card shadow="sm" p="md" mb="xl">
     <Stack spacing="xl">
-      <PodcastDetailsLink podcastId={podcast.collectionId}>
+      <PodcastDetailsLink podcastId={podcast.id}>
         <Group position="center">
-          <Image src={podcast.artworkUrl} alt={podcast.collectionName} radius="md" width={200} />
+          <Image src={podcast.artworkUrl} alt={podcast.title} radius="md" width={200} />
         </Group>
       </PodcastDetailsLink>
 
       <Divider />
 
-      <PodcastDetailsLink podcastId={podcast.collectionId} variant="text">
+      <PodcastDetailsLink podcastId={podcast.id} variant="text">
         <Stack spacing={0} px="md">
-          <Text weight={700}>{podcast.collectionName}</Text>
-          <Text fs="italic">by {podcast.artistName}</Text>
+          <Text weight={700}>{podcast.title}</Text>
+          <Text fs="italic">by {podcast.author}</Text>
         </Stack>
       </PodcastDetailsLink>
 
@@ -28,9 +28,7 @@ export const PodcastDetailsCard = ({ podcast }: PodcastDetailsCardProps) => (
 
       <Stack spacing={0}>
         <Text weight={600}>Description:</Text>
-        <Text fs="italic" weight={300}>
-          {podcast.description}
-        </Text>
+        <Text fs="italic" weight={300} dangerouslySetInnerHTML={{ __html: podcast.description }} />
       </Stack>
     </Stack>
   </Card>

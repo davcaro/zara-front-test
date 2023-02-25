@@ -7,13 +7,17 @@ type EpisodeDetailsProps = {
 
 export const EpisodeDetails = ({ episode }: EpisodeDetailsProps) => (
   <Card shadow="sm" p="md">
-    <Title mb="md">{episode.trackName}</Title>
-    <Text sx={{ whiteSpace: 'pre-line' }}>{episode.description}</Text>
+    <Title mb="md">{episode.title}</Title>
+    {episode.description && <Text dangerouslySetInnerHTML={{ __html: episode.description }} />}
 
-    <Divider my="xl" />
+    {episode.trackUrl && (
+      <>
+        <Divider my="xl" />
 
-    <Group grow>
-      <audio controls src={episode.trackUrl} />
-    </Group>
+        <Group grow>
+          <audio controls src={episode.trackUrl} />
+        </Group>
+      </>
+    )}
   </Card>
 );

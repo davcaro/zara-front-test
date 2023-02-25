@@ -14,11 +14,7 @@ export const PodcastDetails = () => {
 
   return (
     <PodcastDetailsLayout podcast={podcast}>
-      <EpisodesList
-        podcastId={podcastId}
-        episodes={podcast.episodes}
-        episodesCount={podcast.episodesCount}
-      />
+      <EpisodesList podcastId={podcastId} episodes={podcast.episodes} />
     </PodcastDetailsLayout>
   );
 };
