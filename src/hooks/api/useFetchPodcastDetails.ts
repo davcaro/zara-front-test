@@ -27,6 +27,7 @@ const fetchPodcastDetails = (id: string) =>
 type PodcastDetailsResponse = {
   results: Array<{
     kind: 'podcast' | 'podcast-episode';
+    collectionId: string;
     collectionName: string;
     artistName?: string;
     artworkUrl600: string;
@@ -49,6 +50,7 @@ const transformPodcastDetails: (res: PodcastDetailsStringfiedResponse) => Podcas
   const episodes = results.filter(({ kind }) => kind === 'podcast-episode');
 
   return {
+    collectionId: podcast?.collectionId || '',
     collectionName: podcast?.collectionName || '',
     artistName: podcast?.artistName || '',
     artworkUrl: podcast?.artworkUrl600 || '',

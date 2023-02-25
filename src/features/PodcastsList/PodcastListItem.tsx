@@ -1,19 +1,8 @@
-import { Link } from 'wouter';
-import { Card, Image, Text, Stack, Group, Anchor, AnchorProps } from '@mantine/core';
+import { Card, Image, Text, Stack, Group } from '@mantine/core';
+import { PodcastDetailsLink } from '@/components/PodcastDetailsLink';
 import { Podcast } from '@/types/podcast';
 
 const IMAGE_HEIGHT = 120;
-
-type PodcastDetailsLinkProps = AnchorProps & {
-  podcastId: string;
-  children: React.ReactNode;
-};
-
-const PodcastDetailsLink = ({ podcastId, children, ...props }: PodcastDetailsLinkProps) => (
-  <Link href={`/podcast/${podcastId}`}>
-    <Anchor {...props}>{children}</Anchor>
-  </Link>
-);
 
 type PodcastListItemProps = {
   podcast: Podcast;
