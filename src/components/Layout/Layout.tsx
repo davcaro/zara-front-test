@@ -30,7 +30,7 @@ export const Layout = ({ children }: LayoutProps) => (
   <AppShell
     header={<AppHeader />}
     padding="xl"
-    styles={(theme) => ({ main: { backgroundColor: theme.colors.gray[0] } })}
+    sx={(theme) => ({ main: { backgroundColor: theme.colors.gray[0] } })}
   >
     <Box px={LAYOUT_PADDING}>{children}</Box>
   </AppShell>
