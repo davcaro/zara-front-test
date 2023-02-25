@@ -2,6 +2,10 @@ import { Anchor, AppShell, Box, Group, Header, Loader, Title } from '@mantine/co
 import { useIsFetching } from '@tanstack/react-query';
 import { Link } from 'wouter';
 
+type LayoutProps = {
+  children: React.ReactNode;
+};
+
 const LAYOUT_PADDING = { 0: 'xs', xs: 'md', lg: '7%', xl: '10%' };
 
 const AppHeader = () => {
@@ -20,10 +24,6 @@ const AppHeader = () => {
       </Group>
     </Header>
   );
-};
-
-type LayoutProps = {
-  children: React.ReactNode;
 };
 
 export const Layout = ({ children }: LayoutProps) => (

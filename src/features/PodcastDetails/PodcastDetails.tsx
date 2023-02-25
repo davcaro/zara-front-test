@@ -5,7 +5,7 @@ import { EpisodesList } from './EpisodesList';
 
 export const PodcastDetails = () => {
   const [, params] = useRoute('/podcast/:id');
-  const podcastId = params?.id || null;
+  const podcastId = params?.id;
   const { data: podcast } = useFetchPodcastDetails(podcastId);
 
   if (!podcastId || !podcast) {
