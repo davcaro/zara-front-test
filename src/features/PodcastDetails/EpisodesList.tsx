@@ -1,5 +1,5 @@
 import { Stack } from '@mantine/core';
-import { PodcastEpisode } from '@/types/podcastDetails';
+import { PodcastEpisode } from '@/types/podcastEpisode';
 import { EpisodesCounter } from './EpisodesCounter';
 import { EpisodesListTable } from './EpisodesListTable';
 

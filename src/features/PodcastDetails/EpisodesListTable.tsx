@@ -2,7 +2,7 @@ import { Link } from 'wouter';
 import { Anchor, Card, Table, Text } from '@mantine/core';
 import { intervalToDuration, intlFormat } from 'date-fns';
 import { formatDuration } from '@/utils/dates';
-import { PodcastEpisode } from '@/types/podcastDetails';
+import { PodcastEpisode } from '@/types/podcastEpisode';
 
 type EpisodeListItemProps = {
   podcastId: string;

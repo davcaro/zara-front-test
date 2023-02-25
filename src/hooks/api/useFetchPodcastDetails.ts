@@ -32,9 +32,11 @@ type PodcastDetailsResponse = {
     artworkUrl600: string;
     trackId: number;
     trackName: string;
+    description?: string;
     releaseDate: string;
     trackTimeMillis: number;
     trackCount?: number;
+    episodeUrl?: string;
   }>;
 };
 
@@ -55,8 +57,10 @@ const transformPodcastDetails: (res: PodcastDetailsStringfiedResponse) => Podcas
     episodes: episodes.map((episode) => ({
       id: episode.trackId,
       trackName: episode.trackName,
+      description: episode.description,
       releaseDate: episode.releaseDate,
       trackTimeMillis: episode.trackTimeMillis,
+      trackUrl: episode.episodeUrl,
     })),
   };
 };
