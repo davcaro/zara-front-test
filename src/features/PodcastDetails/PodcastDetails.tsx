@@ -1,4 +1,5 @@
 import { useRoute } from 'wouter';
+import { Helmet } from 'react-helmet';
 import { useFetchPodcastDetails } from '@/hooks/api/useFetchPodcastDetails';
 import { PodcastDetailsLayout } from '@/components/PodcastDetailsLayout';
 import { EpisodesList } from './EpisodesList';
@@ -13,8 +14,14 @@ export const PodcastDetails = () => {
   }
 
   return (
-    <PodcastDetailsLayout podcast={podcast}>
-      <EpisodesList podcastId={podcastId} episodes={podcast.episodes} />
-    </PodcastDetailsLayout>
+    <>
+      <Helmet>
+        <title>{podcast.title}</title>
+      </Helmet>
+
+      <PodcastDetailsLayout podcast={podcast}>
+        <EpisodesList podcastId={podcastId} episodes={podcast.episodes} />
+      </PodcastDetailsLayout>
+    </>
   );
 };

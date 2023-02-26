@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet';
 import { useInputState } from '@mantine/hooks';
 import { Stack } from '@mantine/core';
 import { useFetchPodcasts } from '@/hooks/api/useFetchPodcasts';
@@ -16,10 +17,16 @@ export const PodcastsList = () => {
   });
 
   return (
-    <Stack>
-      <SearchBar value={search} onChange={setSearch} total={filteredPodcasts?.length || 0} />
+    <>
+      <Helmet>
+        <title>Podcaster</title>
+      </Helmet>
 
-      {filteredPodcasts && <PodcastsGrid podcasts={filteredPodcasts} />}
-    </Stack>
+      <Stack>
+        <SearchBar value={search} onChange={setSearch} total={filteredPodcasts?.length || 0} />
+
+        {filteredPodcasts && <PodcastsGrid podcasts={filteredPodcasts} />}
+      </Stack>
+    </>
   );
 };
