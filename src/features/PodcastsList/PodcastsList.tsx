@@ -2,6 +2,7 @@ import { Helmet } from 'react-helmet';
 import { useInputState } from '@mantine/hooks';
 import { Stack } from '@mantine/core';
 import { useFetchPodcasts } from '@/hooks/api/useFetchPodcasts';
+import { ErrorPage } from '@/components/ErrorPage';
 import { useFuseSearchPodcasts } from './useFuseSearchPodcasts';
 import { PodcastsGrid } from './PodcastsGrid';
 import { SearchBar } from './SearchBar';
@@ -9,12 +10,16 @@ import { SearchBar } from './SearchBar';
 const GENRE_ID = import.meta.env.VITE_PODCASTS_GENRE_ID;
 
 export const PodcastsList = () => {
-  const { data: podcasts } = useFetchPodcasts({ genre: GENRE_ID, limit: 100 });
+  const { isLoading, data: podcasts, isError } = useFetchPodcasts({ genre: GENRE_ID, limit: 100 });
   const [search, setSearch] = useInputState('');
   const filteredPodcasts = useFuseSearchPodcasts({
     search: search.trim(),
     podcasts: podcasts || [],
   });
+
+  if (isError) {
+    return <ErrorPage />;
+  }
 
   return (
     <>
@@ -23,9 +28,14 @@ export const PodcastsList = () => {
       </Helmet>
 
       <Stack>
-        <SearchBar value={search} onChange={setSearch} total={filteredPodcasts?.length || 0} />
+        <SearchBar
+          value={search}
+          onChange={setSearch}
+          total={filteredPodcasts?.length || 0}
+          loading={isLoading}
+        />
 
-        {filteredPodcasts && <PodcastsGrid podcasts={filteredPodcasts} />}
+        <PodcastsGrid podcasts={filteredPodcasts} loading={isLoading} />
       </Stack>
     </>
   );
